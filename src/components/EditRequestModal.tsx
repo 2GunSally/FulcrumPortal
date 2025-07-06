@@ -195,20 +195,41 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({
               
               <div>
                 <Label htmlFor="requestedBy">Requested By</Label>
-                <Input
-                  id="requestedBy"
+                <Select
                   value={formData.requestedBy}
-                  onChange={(e) => setFormData({ ...formData, requestedBy: e.target.value })}
-                />
+                  onValueChange={(value) => setFormData({ ...formData, requestedBy: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select requester" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {users.map(user => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.name} ({user.initials})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               
               <div>
                 <Label htmlFor="assignedTo">Assigned To</Label>
-                <Input
-                  id="assignedTo"
+                <Select
                   value={formData.assignedTo}
-                  onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
-                />
+                  onValueChange={(value) => setFormData({ ...formData, assignedTo: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select assignee (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Unassigned</SelectItem>
+                    {users.map(user => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.name} ({user.initials})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             
