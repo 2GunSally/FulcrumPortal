@@ -11,6 +11,7 @@ import { Send, X } from 'lucide-react';
 import ImageUploadButton from '@/components/ImageUploadButton';
 import ImagePreview from '@/components/ImagePreview';
 import ImageViewModal from '@/components/ImageViewModal';
+import { useAppContext } from '@/contexts/AppContext';
 
 interface MaintenanceRequestFormProps {
   user: User;
@@ -23,12 +24,16 @@ const MaintenanceRequestForm: React.FC<MaintenanceRequestFormProps> = ({
   onSubmit,
   onCancel
 }) => {
+  const { users } = useAppContext();
+  
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     department: '',
     priority: 'medium',
-    equipment: ''
+    equipment: '',
+    requestedBy: user.id,
+    assignedTo: ''
   });
   
   const [images, setImages] = useState<string[]>([]);
@@ -36,15 +41,21 @@ const MaintenanceRequestForm: React.FC<MaintenanceRequestFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.description || !formData.department) {
+    if (!formData.title || !formData.description || !formData.department || !formData.requestedBy) {
       return;
     }
+    
+    const requestedByUser = users.find(u => u.id === formData.requestedBy);
+    const assignedToUser = formData.assignedTo ? users.find(u => u.id === formData.assignedTo) : null;
     
     onSubmit({
       ...formData,
       images,
       id: Date.now().toString(),
-      requestedBy: user.name,
+      requestedBy: formData.requestedBy,
+      requestedByName: requestedByUser?.name || '',
+      assignedTo: formData.assignedTo || null,
+      assignedToName: assignedToUser?.name || null,
       requestedAt: new Date().toISOString(),
       status: 'pending'
     });
@@ -143,6 +154,41 @@ const MaintenanceRequestForm: React.FC<MaintenanceRequestFormProps> = ({
               </div>
             </div>
             
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label className="text-gray-700 font-medium">Requested by *</Label>
+                <Select value={formData.requestedBy} onValueChange={(value) => handleChange('requestedBy', value)}>
+                  <SelectTrigger className="mt-1 border-gray-300 focus:border-green-500 focus:ring-green-500">
+                    <SelectValue placeholder="Select requester" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {users.map(user => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.name} ({user.initials})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label className="text-gray-700 font-medium">Assigned to</Label>
+                <Select value={formData.assignedTo} onValueChange={(value) => handleChange('assignedTo', value)}>
+                  <SelectTrigger className="mt-1 border-gray-300 focus:border-green-500 focus:ring-green-500">
+                    <SelectValue placeholder="Select assignee (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Unassigned</SelectItem>
+                    {users.map(user => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.name} ({user.initials})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
             <div>
               <Label htmlFor="description" className="text-gray-700 font-medium">Description *</Label>
               <Textarea
@@ -180,7 +226,7 @@ const MaintenanceRequestForm: React.FC<MaintenanceRequestFormProps> = ({
               <Button
                 type="submit"
                 className="bg-green-600 hover:bg-green-700 text-white"
-                disabled={!formData.title || !formData.description || !formData.department}
+                disabled={!formData.title || !formData.description || !formData.department || !formData.requestedBy}
               >
                 <Send className="w-4 h-4 mr-2" />
                 Submit Request
