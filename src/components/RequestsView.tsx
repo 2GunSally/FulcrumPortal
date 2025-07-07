@@ -129,7 +129,11 @@ const RequestsView: React.FC<RequestsViewProps> = ({
               <div className="flex justify-between items-center text-sm">
                 <span className="text-gray-400">{request.department}</span>
                 <span className="text-gray-400">
-                  {request.createdAt ? new Date(request.createdAt).toLocaleDateString() : ''}
+                  {request.createdAt ? (() => {
+                    const dateObj = new Date(request.createdAt);
+                    if (isNaN(dateObj.getTime())) return '';
+                    return dateObj.toLocaleDateString();
+                  })() : ''}
                 </span>
               </div>
             </div>
