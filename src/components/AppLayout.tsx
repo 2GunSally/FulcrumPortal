@@ -27,7 +27,9 @@ const AppLayout: React.FC = () => {
     completeChecklist,
     addMaintenanceRequest,
     updateRequest,
-    loading
+    loading,
+    addRequest,
+    deleteRequest
   } = useAppContext();
   
   const [sidebarOpen, setSidebarOpen] = useState(false);
