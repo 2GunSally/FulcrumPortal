@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
 import LoginForm from './LoginForm';
 import Sidebar from './Sidebar';
 import Dashboard from './Dashboard';
 import ChecklistsView from './ChecklistsView';
-import RequestManagement from './RequestManagement';
+import { RequestManagement } from './RequestManagement';
 import MessagesView from './MessagesView';
 import AlertsView from './AlertsView';
 import { AdminPanel } from './AdminPanel';
