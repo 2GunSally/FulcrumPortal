@@ -5,7 +5,7 @@ import LoginForm from './LoginForm';
 import Sidebar from './Sidebar';
 import Dashboard from './Dashboard';
 import ChecklistsView from './ChecklistsView';
-import RequestsView from './RequestsView';
+import RequestManagement from './RequestManagement';
 import MessagesView from './MessagesView';
 import AlertsView from './AlertsView';
 import { AdminPanel } from './AdminPanel';
@@ -176,12 +176,7 @@ const AppLayout: React.FC = () => {
             )}
             
             {currentView === 'requests' && (
-              <RequestsView
-                requests={requests}
-                user={user}
-                onAddRequest={addMaintenanceRequest}
-                onUpdateRequest={updateRequest}
-              />
+              <RequestManagement />
             )}
             
             {currentView === 'admin' && canAccessAdmin && (
